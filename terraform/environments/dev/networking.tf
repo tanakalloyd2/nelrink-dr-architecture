@@ -43,3 +43,39 @@ resource "aws_route_table_association" "public_assoc" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public_rt.id
 }
+
+resource "aws_subnet" "app_subnet" {
+  vpc_id     = aws_vpc.primary.id
+  cidr_block = "10.0.11.0/24"
+
+  tags = {
+    Name = "App-Subnet-A"
+  }
+}
+
+resource "aws_subnet" "db_subnet" {
+  vpc_id     = aws_vpc.primary.id
+  cidr_block = "10.0.21.0/24"
+
+  tags = {
+    Name = "DB-Subnet-A"
+  }
+}
+
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.primary.id
+
+  tags = {
+    Name = "Private-RT"
+  }
+}
+
+resource "aws_route_table_association" "app_assoc" {
+  subnet_id      = aws_subnet.app_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+
+resource "aws_route_table_association" "db_assoc" {
+  subnet_id      = aws_subnet.db_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
